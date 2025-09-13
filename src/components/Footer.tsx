@@ -1,4 +1,4 @@
-// Componente do rodapé da página
+//componente do rodapé da página
 export default function Footer() {
     return(
         <footer>

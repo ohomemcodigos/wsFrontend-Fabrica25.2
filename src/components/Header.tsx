@@ -1,4 +1,4 @@
-// Componente do cabeçalho da página
+//componente do cabeçalho da página
 export default function Header() {
     return (
         <header>
