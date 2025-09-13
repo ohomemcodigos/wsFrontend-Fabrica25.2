@@ -1,18 +1,13 @@
 'use client';
 
-/* bibliotecas */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Header from './components/Header';
-import Footer from './components/Footer';
 
-//declaração váriaveis dos pokémon
 type Pokemon = {
   name: string;
   url: string;
 };
 
-//componente principal,para manter os pokemon salvos
 export default function HomePKdex() {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
 
@@ -25,19 +20,14 @@ export default function HomePKdex() {
     load();
   }, []);
 
-  //página
   return (
-    <>
-      <Header /> 
-      <main>
-        <h2>Lista de Pokémons</h2>
-        <ul>
-          {pokemon.map((poke, index) => (
-            <li key={index}>{poke.name}</li>
-          ))}
-        </ul>
-      </main>
-      <Footer />
-    </>
+    <section>
+      <h2>Lista de Pokémons</h2>
+      <ul>
+        {pokemon.map((poke, index) => (
+          <li key={index}>{poke.name}</li>
+        ))}
+      </ul>
+    </section>
   );
 }
