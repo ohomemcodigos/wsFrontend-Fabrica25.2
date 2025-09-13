@@ -1,8 +1,31 @@
-import React from 'react'
+/* bibliotecas */
+import React, { useEffect } from 'react'
+import Axios from 'axios'
+
+/* componentes */
 import Header from '@/componets/Header'
 import Footer from '@/componets/Footer'
 
-export default function Pokedex() {
+//declaração das váriaveis dos pokemon
+type Pokemon = {
+  name: string
+  url: string
+}
+
+//função para manter os pokemon salvos em uma lista no State
+export default function HomePKdex() {
+  const [pokemon, setPokemon] = useState<Pokemon[]>([]);
+}
+
+useEffect(() =>{ //chama  API
+  async function load(){
+    const res = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=10000")
+    setPokemon(res.data.results)
+  }
+  load();
+}, [])
+
+export default function HomePKdex() {
   return (
     <>
       <Header />
