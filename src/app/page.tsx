@@ -1,10 +1,8 @@
-/* bibliotecas */
-import React, { useEffect } from 'react'
-import Axios from 'axios'
+"use client" //para funcionar em client components
 
-/* componentes */
-import Header from '@/componets/Header'
-import Footer from '@/componets/Footer'
+/* bibliotecas */
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
 //declaração das váriaveis dos pokemon
 type Pokemon = {
