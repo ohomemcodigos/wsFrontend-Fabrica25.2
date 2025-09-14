@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 /* componentes */
-import PokemonCard from './PokemonCard';
+import PokemonCardLink from './PokemonCardLink';
 import SearchBar from './SearchBar';
 
 // tipagem de dados que serão armazenados dos Pokémon
@@ -21,8 +21,6 @@ type Pokemon = {
 export default function HomePKdex() {
   // estado que guarda quais pokémon estão carregados
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-  // estado que guarda quais pokémon estão como shiny 
-  const [shinySet, setShinySet] = useState<Set<number>>(new Set());
     const [search, setSearch] = useState(""); // estado da pesquisa dos nomes
 
   // puxa os Pokémon da API
@@ -63,19 +61,6 @@ export default function HomePKdex() {
     load();
   }, []);
 
-  // função para alternar os shinys
-  const toggleShiny = (id: number) => {
-    setShinySet((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id); // se era shiny, deixa de ser
-      } else {
-        newSet.add(id); // se não era shiny, passa a ser
-      }
-      return newSet;
-    });
-  };
-
   // filtra os pokémons pelo nome digitado
   const filteredPokemons = pokemons.filter(
     (poke) =>
@@ -96,21 +81,18 @@ export default function HomePKdex() {
         placeholder="Buscar Pokémon por nome ou Tipo..."
       />
 
-      
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-      {filteredPokemons.map((poke) => (
-        <PokemonCard
-          key={poke.id}
-          id={poke.id}
-          name={poke.name}
-          image={poke.image}
-          shinyImage={poke.shinyImage}
-          types={poke.types}
-          isShiny={shinySet.has(poke.id)} // verifica se é shiny
-          onToggleShiny={() => toggleShiny(poke.id)}
-        />
-      ))}
-    </div>
+        {filteredPokemons.map((poke) => (
+          <PokemonCardLink
+            key={poke.id}
+            id={poke.id}
+            name={poke.name}
+            image={poke.image}
+            types={poke.types}
+          />
+        ))}
+      </div>
+
     </section>
   );
 }

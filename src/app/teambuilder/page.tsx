@@ -36,32 +36,34 @@ export default function TeamBuilderPage() {
           res.data.results.map(async (poke: { name: string; url: string }) => {
             const details = await axios.get(poke.url);
 
-            // dados retornados
             return {
               id: details.data.id,
               name: details.data.name,
-              image: details.data.sprites.other.showdown.front_default, // sprite normal
-              shinyImage: details.data.sprites.other.showdown.front_shiny, // sprite shiny
-              types: details.data.types.map((t: PokemonType) => t.type.name), // pega os nomes dos tipos
+              image:
+                details.data.sprites.other?.showdown?.front_default ??
+                details.data.sprites.front_default, // fallback seguro
+              shinyImage:
+                details.data.sprites.other?.showdown?.front_shiny ??
+                details.data.sprites.front_shiny,
+              types: details.data.types.map((t: PokemonType) => t.type.name),
             };
           })
         );
 
-        // salva os Pokémon detalhados
         setPokemons(detailedPokemons);
       } catch (err) {
         console.error("Erro ao carregar os Pokémon:", err);
       }
     }
 
-    load(); // chama a função
+    load();
   }, []);
 
   // adiciona um Pokémon ao time, com no máximo 6 Pokémon na equipe
   const addPokemon = (pokemon: BasePokemon) => {
-    if (team.length < 6) {
-      setTeam([...team, { ...pokemon, isShiny: false }]); // entra como não shiny
-    }
+    if (team.length >= 6) return;
+    if (team.some((p) => p.id === pokemon.id)) return; // evita duplicados
+    setTeam([...team, { ...pokemon, isShiny: false }]);
   };
 
   // remove um Pokémon do time
@@ -90,10 +92,10 @@ export default function TeamBuilderPage() {
           {Array.from({ length: 6 }).map((_, i) => (
             <TrainerCard
               key={i}
-              pokemon={team[i]}
+              pokemon={team[i]} // pode ser undefined, TrainerCard deve aceitar isso
               onRemove={() => removePokemon(i)}
               onToggleShiny={() => toggleShiny(i)}
-              showTypes={false} // alterna entre mostrar ou não os Tipos
+              showTypes={false}
             />
           ))}
         </div>
@@ -104,19 +106,18 @@ export default function TeamBuilderPage() {
         <h2 className="text-xl font-bold mb-4 text-gray-700 text-center">
           Escolha seus Pokémon
         </h2>
-        {/* grid responsiva com todos os Pokémon carregados */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {pokemons.map((poke) => (
             <div
               key={poke.id}
               className="cursor-pointer"
-              onClick={() => addPokemon(poke)} // adciona na equipe ao clicar
+              onClick={() => addPokemon(poke)}
             >
               <PokemonCard
                 {...poke}
                 isShiny={false}
                 onToggleShiny={() => {}}
-                showTypes={false} // aqui controlamos se mostra badges, de todos os Pokémon
+                showTypes={false}
               />
             </div>
           ))}
