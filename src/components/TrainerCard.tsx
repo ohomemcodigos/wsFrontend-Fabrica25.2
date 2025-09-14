@@ -4,22 +4,22 @@
 import React from "react";
 
 /* imports */
-import TypeBadge from "./TypeBadge"; // componente para exibir os tipos
 import { BasePokemon } from "../types/pokemon";
+import TypeBadge from "./TypeBadge";
 
 // tipagem das props
 type TrainerCardProps = {
   pokemon?: BasePokemon & { isShiny?: boolean }; // slot no qual o Pokémon ocupa
   onRemove?: () => void; // callback para remover o Pokémon do time
   onToggleShiny?: () => void; // callback para alternar entre normal/shiny
-  showTypes?: boolean; // alterna entre mostrar ou não os Tipos
+  showTypes?: boolean; // se mostra ou não os tipos
 };
 
 export default function TrainerCard({
   pokemon,
   onRemove,
   onToggleShiny,
-  showTypes = false, // por padrão não mostra os Tipos
+  showTypes = false,
 }: TrainerCardProps) {
   // se o slot estiver vazio, renderiza um card "Vazio"
   if (!pokemon) {
@@ -32,35 +32,33 @@ export default function TrainerCard({
 
   return (
     <div className="bg-white rounded-xl shadow relative h-32 flex flex-col items-center justify-between p-2">
-      {/* botão de remover Pokémon */}
-      {onRemove && (
-        <button
-          onClick={onRemove}
-          className="absolute top-1 right-1 text-xs bg-red-500 text-white px-2 py-0.5 rounded hover:bg-red-600"
-          aria-label={`Remover ${pokemon.name} do time`}
-        >
-          ✕
-        </button>
-      )}
+      {/* botão de remover */}
+      <button
+        onClick={() => onRemove && onRemove()}
+        className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs"
+        aria-label={`Remover ${pokemon.name} do time`}
+      >
+        ✕
+      </button>
 
       {/* sprite do Pokémon (alternável entre normal/shiny ao clicar) */}
       <img
         src={pokemon.isShiny ? pokemon.shinyImage : pokemon.image}
         alt={pokemon.name || "Pokémon"}
-        className="h-20 w-auto object-contain cursor-pointer"
-        onClick={() => onToggleShiny && onToggleShiny()} // só chama se a função existir
+        className="w-24 h-24 object-contain cursor-pointer"
+        onClick={() => onToggleShiny && onToggleShiny()}
       />
 
-      {/* nome do Pokémon */}
-      <p className="text-xs capitalize font-medium text-center text-gray-800 truncate w-full">
+      {/* nome do Pokémon centralizado */}
+      <p className="text-xs sm:text-sm capitalize font-semibold text-center text-gray-800 leading-tight mt-1">
         {pokemon.name}
       </p>
 
-      {/* Tipos do Pokémon (opcional) */}
+      {/* tipos menores (se ativado) */}
       {showTypes && (
         <div className="w-full flex justify-center gap-1 mt-1 flex-wrap">
           {pokemon.types.map((type) => (
-            <TypeBadge key={type} type={type} />
+            <TypeBadge key={type} type={type} small />
           ))}
         </div>
       )}

@@ -5,21 +5,22 @@ import React from "react";
 
 // tipagem das props que o componente espera receber
 type SearchBarProps = {
-    value: string; // valor atual do input
-    onChange: (value: string) => void; // função chamada quando é digitado algo
-    placeholder?: string; // texto exibido quando o input está vazio
-}
+  value: string; // valor atual do input
+  onChange: (value: string) => void; // função chamada quando é digitado algo
+  placeholder?: string; // texto exibido quando o input está vazio
+};
 
-export default function SearchBar ({ value, onChange, placeholder }: SearchBarProps) {
-    return(
-        <div className="mb-6 flex justify-center">
-            <input
-            type="text"
-            placeholder={placeholder || "Buscar..."} // se não passar placeholder, usa "Buscar..."
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            className="w-full sm:w-1/2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-        </div>
-    )
+export default function SearchBar({ value, onChange, placeholder }: SearchBarProps) {
+  return (
+    <div className="mb-6 flex justify-center">
+      <input
+        type="text"
+        placeholder={placeholder || "Buscar..."} // se não passar placeholder, usa "Buscar..."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full sm:w-2/3 lg:w-1/2 p-2 border rounded-lg shadow-sm 
+                   focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+    </div>
+  );
 }

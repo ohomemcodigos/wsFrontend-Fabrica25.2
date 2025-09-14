@@ -1,6 +1,7 @@
 'use client'
 
-import { createContext, useContext, useState, ReactNode } from "react"
+// mantém seus comentários e estrutura, adicionei persistência/localStorage
+import { createContext, useContext, useEffect, useState, ReactNode } from "react"
 
 type FavoritePokemon = {
   id: number
@@ -13,12 +14,30 @@ type FavoritesContextType = {
   addFavorite: (pokemon: FavoritePokemon) => void
   removeFavorite: (id: number) => void
   isFavorite: (id: number) => boolean
+  count: number
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined)
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
-  const [favorites, setFavorites] = useState<FavoritePokemon[]>([])
+  // carrega a lista inicial do localStorage (se existir)
+  const [favorites, setFavorites] = useState<FavoritePokemon[]>(() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem("favorites") : null
+      return raw ? JSON.parse(raw) : []
+    } catch {
+      return []
+    }
+  })
+
+  // salva sempre que favorites mudar
+  useEffect(() => {
+    try {
+      localStorage.setItem("favorites", JSON.stringify(favorites))
+    } catch (err) {
+      console.error("Erro ao salvar favoritos:", err)
+    }
+  }, [favorites])
 
   const addFavorite = (pokemon: FavoritePokemon) => {
     if (favorites.length >= 50) {
@@ -26,12 +45,12 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       return
     }
     if (!favorites.some((f) => f.id === pokemon.id)) {
-      setFavorites([...favorites, pokemon])
+      setFavorites((prev) => [...prev, pokemon])
     }
   }
 
   const removeFavorite = (id: number) => {
-    setFavorites(favorites.filter((f) => f.id !== id))
+    setFavorites((prev) => prev.filter((f) => f.id !== id))
   }
 
   const isFavorite = (id: number) => {
@@ -39,7 +58,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, isFavorite }}>
+    <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, isFavorite, count: favorites.length }}>
       {children}
     </FavoritesContext.Provider>
   )

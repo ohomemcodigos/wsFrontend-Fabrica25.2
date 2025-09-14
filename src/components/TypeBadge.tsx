@@ -14,11 +14,11 @@ type TypeBadgeProps = {
 export default function TypeBadge({ type }: TypeBadgeProps) {
   return (
     <span
-      className={`text-xs px-2 py-0.5 rounded-full border-2 uppercase font-bold ${
-        typeColors[type] || "text-gray-600"
+      className={`text-xs sm:text-sm px-2 py-0.5 rounded-full border-2 uppercase font-bold ${
+        typeColors[type] || "text-gray-600 border-gray-400"
       }`}
     >
-      {type} {/* texto exibido no badge */}
+      {type}
     </span>
   );
 }

@@ -7,6 +7,7 @@ import axios from "axios";
 /* imports */
 import TrainerCard from "../../components/TrainerCard";
 import PokemonCard from "../../components/PokemonCard";
+import SearchBar from "../../components/SearchBar";
 import { BasePokemon } from "../../types/pokemon";
 
 // tipagem para os Tipos que a API retorna
@@ -21,30 +22,37 @@ type PokemonType = {
 export default function TeamBuilderPage() {
   // estado com a lista de todos os Pokémon carregados da API
   const [pokemons, setPokemons] = useState<BasePokemon[]>([]);
+  const [search, setSearch] = useState("");
 
   // estado com o time do usuário, podendo eles serem shiny ou não
   const [team, setTeam] = useState<(BasePokemon & { isShiny: boolean })[]>([]);
 
-  // carrega os Pokémon da API
+  // carrega todos os Pokémon da API de uma vez
   useEffect(() => {
     async function load() {
       try {
-        const res = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=151");
-        
-        // para cada Pokémon básico, faz outra requisição pegando detalhes
+        const res = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=2000");
+
         const detailedPokemons: BasePokemon[] = await Promise.all(
           res.data.results.map(async (poke: { name: string; url: string }) => {
             const details = await axios.get(poke.url);
 
+            // fallback das sprites (garante que sempre terá uma imagem)
+            const image =
+              details.data.sprites.other["official-artwork"].front_default ||
+              details.data.sprites.other.showdown.front_default ||
+              details.data.sprites.front_default;
+
+            const shinyImage =
+              details.data.sprites.other["official-artwork"].front_shiny ||
+              details.data.sprites.other.showdown.front_shiny ||
+              details.data.sprites.front_shiny;
+
             return {
               id: details.data.id,
               name: details.data.name,
-              image:
-                details.data.sprites.other?.showdown?.front_default ??
-                details.data.sprites.front_default, // fallback seguro
-              shinyImage:
-                details.data.sprites.other?.showdown?.front_shiny ??
-                details.data.sprites.front_shiny,
+              image,
+              shinyImage,
               types: details.data.types.map((t: PokemonType) => t.type.name),
             };
           })
@@ -61,9 +69,9 @@ export default function TeamBuilderPage() {
 
   // adiciona um Pokémon ao time, com no máximo 6 Pokémon na equipe
   const addPokemon = (pokemon: BasePokemon) => {
-    if (team.length >= 6) return;
-    if (team.some((p) => p.id === pokemon.id)) return; // evita duplicados
-    setTeam([...team, { ...pokemon, isShiny: false }]);
+    if (team.length < 6) {
+      setTeam([...team, { ...pokemon, isShiny: false }]);
+    }
   };
 
   // remove um Pokémon do time
@@ -80,19 +88,25 @@ export default function TeamBuilderPage() {
     );
   };
 
+  // filtra os Pokémon pelo nome digitado
+  const filteredPokemons = pokemons.filter(
+    (poke) =>
+      poke.name.toLowerCase().includes(search.toLowerCase()) ||
+      poke.types.some((t) => t.toLowerCase().includes(search.toLowerCase()))
+  );
+
   return (
-    <section className="py-10 container mx-auto px-4 flex gap-8">
+    <section className="py-10 container mx-auto px-4 flex flex-col lg:flex-row gap-8">
       {/* sidebar fixa com o time do usuário */}
-      <aside className="w-72 h-fit sticky top-20 bg-white p-4 rounded-xl shadow-md">
+      <aside className="lg:w-72 w-full h-fit lg:sticky top-20 bg-white p-4 rounded-xl shadow-md">
         <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
           ⭐ Seu Time ⭐
         </h2>
-        <div className="grid grid-cols-2 gap-4">
-          {/* renderiza 6 slots fixos para o time */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <TrainerCard
               key={i}
-              pokemon={team[i]} // pode ser undefined, TrainerCard deve aceitar isso
+              pokemon={team[i]}
               onRemove={() => removePokemon(i)}
               onToggleShiny={() => toggleShiny(i)}
               showTypes={false}
@@ -106,8 +120,19 @@ export default function TeamBuilderPage() {
         <h2 className="text-xl font-bold mb-4 text-gray-700 text-center">
           Escolha seus Pokémon
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {pokemons.map((poke) => (
+
+        {/* barra de pesquisa */}
+        <div className="mb-6">
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Buscar Pokémon por nome ou Tipo..."
+          />
+        </div>
+
+        {/* grid responsiva com todos os Pokémon carregados */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6">
+          {filteredPokemons.map((poke) => (
             <div
               key={poke.id}
               className="cursor-pointer"

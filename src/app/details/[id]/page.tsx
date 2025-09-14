@@ -24,12 +24,18 @@ interface Pokemon {
   base_experience: number;
   types: PokemonType[];
   sprites: {
-    other: {
-      ["official-artwork"]: {
-        front_default: string;
-        front_shiny: string;
+    other?: {
+      ["official-artwork"]?: {
+        front_default?: string;
+        front_shiny?: string;
+      };
+      showdown?: {
+        front_default?: string;
+        front_shiny?: string;
       };
     };
+    front_default?: string;
+    front_shiny?: string;
   };
 }
 
@@ -57,7 +63,7 @@ export default function PokemonDetalhes({ params }: { params: Promise<{ id: stri
         console.error("Erro ao carregar Pokémon:", err)
       }
     }
-    load()
+    if (id) load()
   }, [id])
 
   // se ainda não carregou o Pokémon, mostra mensagem
@@ -67,29 +73,43 @@ export default function PokemonDetalhes({ params }: { params: Promise<{ id: stri
   const favorito = isFavorite(pokemon.id)
 
   // define qual sprite deve ser mostrado (normal ou shiny)
-  const sprite = isShiny
-    ? pokemon.sprites.other["official-artwork"].front_shiny
-    : pokemon.sprites.other["official-artwork"].front_default
+  // >>> fallback chain: official-artwork -> showdown -> front_default
+  const getImg = (isShinyRequested: boolean) => {
+    // try official-artwork
+    const art = pokemon.sprites.other?.["official-artwork"]
+    const sd = pokemon.sprites.other?.showdown
+    if (isShinyRequested) {
+      return art?.front_shiny ?? sd?.front_shiny ?? pokemon.sprites.front_shiny ?? ""
+    }
+    return art?.front_default ?? sd?.front_default ?? pokemon.sprites.front_default ?? ""
+  }
+
+  const sprite = getImg(isShiny)
 
   return (
     <section className="container mx-auto px-4 py-10">
       {/* caixa principal */}
       <div className="bg-white p-6 rounded-xl shadow-md max-w-lg mx-auto text-center">
-        
         {/* título com nome e número */}
-        <h1 className="text-3xl font-bold capitalize mb-4 text-gray-800">
+        <h1 className="text-2xl sm:text-3xl font-bold capitalize mb-4 text-gray-800">
           #{pokemon.id} - {pokemon.name}
         </h1>
 
-        {/* sprite centralizado */}
-        <img
-          src={sprite}
-          alt={pokemon.name}
-          className="w-48 h-48 mx-auto transition-transform duration-300 hover:scale-110"
-        />
+        {/* sprite centralizado; tamanho responsivo */}
+        {sprite ? (
+          <img
+            src={sprite}
+            alt={pokemon.name}
+            className="w-40 sm:w-48 md:w-56 h-auto mx-auto transition-transform duration-300 hover:scale-110"
+          />
+        ) : (
+          <div className="w-40 sm:w-48 md:w-56 h-40 bg-gray-100 rounded-lg mx-auto flex items-center justify-center text-gray-500">
+            Sem imagem
+          </div>
+        )}
 
         {/* botões de ação */}
-        <div className="mt-4 flex gap-4 justify-center">
+        <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center items-center">
           {/* botão de favoritar/remover */}
           <button
             onClick={() =>
@@ -98,13 +118,11 @@ export default function PokemonDetalhes({ params }: { params: Promise<{ id: stri
                 : addFavorite({
                     id: pokemon.id,
                     name: pokemon.name,
-                    image: pokemon.sprites.other["official-artwork"].front_default,
+                    image: getImg(false) || "" // garante imagem armazenada
                   })
             }
             className={`px-4 py-2 rounded-lg text-white font-semibold shadow ${
-              favorito
-                ? "bg-red-500 hover:bg-red-600"
-                : "bg-blue-500 hover:bg-blue-600"
+              favorito ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
             }`}
           >
             {favorito ? "Remover dos Favoritos" : "Favoritar ⭐"}
