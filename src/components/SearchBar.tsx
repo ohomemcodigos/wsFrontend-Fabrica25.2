@@ -14,11 +14,11 @@ export default function SearchBar ({ value, onChange, placeholder }: SearchBarPr
     return(
         <div className="mb-6 flex justify-center">
             <input
-                type="text"
-                placeholder={placeholder || "Buscar..."}
-                value={value} // valor atual do input
-                onChange={(e) => onChange(e.target.value)} // chama a função recebida ao digitar
-                className="w-full sm:w1/2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            type="text"
+            placeholder={placeholder || "Buscar..."} // se não passar placeholder, usa "Buscar..."
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full sm:w-1/2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
         </div>
     )

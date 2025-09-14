@@ -5,8 +5,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 /* componentes */
-import PokemonCard from '../components/PokemonCard';
-import SearchBar from '../components/SearchBar';
+import PokemonCard from './PokemonCard';
+import SearchBar from './SearchBar';
 
 // tipagem de dados que serão armazenados dos Pokémon
 type Pokemon = {

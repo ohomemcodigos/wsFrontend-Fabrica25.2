@@ -25,3 +25,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.sprite {
+  @apply w-24 h-24 object-contain;
+}

@@ -3,42 +3,24 @@
 /* bibliotecas */
 import React from "react";
 
-// tipagem das props esperadas pelo componente
+/* imports */
+import TypeBadge from "./TypeBadge"; // componente para exibir os tipos
+
+// tipagem das props que o componente recebe
 type PokemonCardProps = {
-  id: number;             // número do Pokémon na Pokédex
-  name: string;           // nome do Pokémon
-  image: string;          // sprite normal
-  shinyImage: string;     // sprite shiny
-  types: string[];        // lista de tipos
-  isShiny: boolean;       // indica se o Pokémon está shiny
-  onToggleShiny: () => void; // função chamada ao clicar na imagem para alternar normal/shiny
+  id: number; // número do Pokémon na Pokédex
+  name: string; // nome do Pokémon
+  image: string; // sprite normal
+  shinyImage: string; // sprite shiny
+  types: string[]; // lista de tipos
+  isShiny: boolean; // flag indicando se deve mostrar a versão shiny
+  onToggleShiny: () => void; // callback quando clica na sprite
+
+  /* props opcionais */
+  showTypes?: boolean; // se true, mostra os tipos (default: true)
+  showId?: boolean;    // se true, mostra o ID junto do nome (default: true)
 };
 
-// cores para os tipo.
-// serão aplicados tanto nos nomes, indicados pelo seus tipos principais
-// tanto nas "caixinhas" de tipos
-const typeColors: Record<string, string> = {
-  fire: "text-red-600",
-  water: "text-blue-500",
-  grass: "text-green-500",
-  electric: "text-yellow-400",
-  psychic: "text-pink-500",
-  ghost: "text-purple-500",
-  dragon: "text-indigo-600",
-  normal: "text-amber-200",
-  fighting: "text-orange-800",
-  poison: "text-purple-400",
-  ground: "text-yellow-600",
-  rock: "text-amber-900",
-  bug: "text-lime-500",
-  ice: "text-cyan-400",
-  fairy: "text-pink-400",
-  steel: "text-gray-400",
-  dark: "text-gray-800",
-  flying: "text-sky-500",
-};
-
-// componente de Card do Pokémon
 export default function PokemonCard({
   id,
   name,
@@ -47,39 +29,32 @@ export default function PokemonCard({
   types,
   isShiny,
   onToggleShiny,
+  showTypes = true, // valor padrão
+  showId = true, // valor padrão
 }: PokemonCardProps) {
   return (
-    <div className="bg-zinc-500 rounded-xl shadow p-4 flex flex-col items-center hover:shadow-lg transition">
-      {/* sprite com toggle de normal/shiny */}
+    <div className="bg-white rounded-xl shadow p-4 flex flex-col items-center hover:shadow-lg transition">
+      {/* sprite com toggle shiny */}
       <img
         src={isShiny ? shinyImage : image}
         alt={name}
-        className="w-20 h-auto object-contain cursor-pointer"
+        className="sprite cursor-pointer"
         onClick={onToggleShiny}
       />
 
-      {/* nome colorido pelo tipo principal */}
-      <p
-        className={`mt-2 text-sm capitalize font-black text-center ${
-          typeColors[types[0]] || "text-gray-800"
-        }`}
-      >
-        #{id} - {name}
+      {/* nome do Pokémon (pode mostrar com ID ou só o nome) */}
+      <p className="mt-2 text-sm capitalize font-black text-center text-gray-800">
+        {showId ? `#${id} - ${name}` : name}
       </p>
 
-      {/* tipos com caixinhas coloridas */}
-      <div className="w-full flex justify-center gap-1 mt-2 flex-wrap font-bold">
-        {types.map((type) => (
-          <span
-            key={type}
-            className={`text-xs px-2 py-0.5 rounded-full border-3 uppercase ${
-              typeColors[type] || "text-gray-600"
-            }`}
-          >
-            {type}
-          </span>
-        ))}
-      </div>
+      {/* tipos (se showTypes = true) */}
+      {showTypes && (
+        <div className="w-full flex justify-center gap-1 mt-2 flex-wrap">
+          {types.map((type) => (
+            <TypeBadge key={type} type={type} /> // renderiza badge para cada tipo
+          ))}
+        </div>
+      )}
     </div>
   );
 }

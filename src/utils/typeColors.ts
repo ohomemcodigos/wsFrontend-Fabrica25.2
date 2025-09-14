@@ -1,0 +1,21 @@
+// define as cores que serão utilizadas nos Tipos
+export const typeColors: Record<string, string> = {
+  fire: "text-red-600",
+  water: "text-blue-500",
+  grass: "text-green-500",
+  electric: "text-yellow-400",
+  psychic: "text-pink-500",
+  ghost: "text-purple-500",
+  dragon: "text-indigo-600",
+  normal: "text-amber-200",
+  fighting: "text-orange-800",
+  poison: "text-purple-400",
+  ground: "text-yellow-600",
+  rock: "text-amber-900",
+  bug: "text-lime-500",
+  ice: "text-cyan-400",
+  fairy: "text-pink-400",
+  steel: "text-gray-400",
+  dark: "text-gray-800",
+  flying: "text-sky-500",
+};
