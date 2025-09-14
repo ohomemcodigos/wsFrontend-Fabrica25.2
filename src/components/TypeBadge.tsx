@@ -1,22 +1,18 @@
-'use client'; // deixa em modo usuário, para rodar no navegador
-
-/* bibliotecas */
+'use client';
 import React from "react";
-
-/* imports */
 import { typeColors } from "../utils/typeColors";
 
-// tipagem das props
 type TypeBadgeProps = {
-  type: string; // tipo do Pokémon
+  type: string;
+  small?: boolean;
 };
 
-export default function TypeBadge({ type }: TypeBadgeProps) {
+export default function TypeBadge({ type, small = false }: TypeBadgeProps) {
+  const sizeClass = small ? "text-xs px-2 py-0.5" : "text-xs sm:text-sm px-2 py-0.5";
+
   return (
     <span
-      className={`text-xs sm:text-sm px-2 py-0.5 rounded-full border-2 uppercase font-bold ${
-        typeColors[type] || "text-gray-600 border-gray-400"
-      }`}
+      className={`${typeColors[type] || "text-gray-600"} inline-flex items-center justify-center ${sizeClass} rounded-full border-2 border-current uppercase font-bold whitespace-nowrap mr-1 mb-1`}
     >
       {type}
     </span>

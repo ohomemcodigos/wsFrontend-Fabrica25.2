@@ -1,25 +1,19 @@
-'use client'; // deixa em modo usuário, para rodar no navegador
+'use client'
 
-/* bibliotecas */
-import React from "react";
+import React from "react"
+import TypeBadge from "./TypeBadge"
 
-/* imports */
-import TypeBadge from "./TypeBadge"; // componente para exibir os tipos
-
-// tipagem das props que o componente recebe
 type PokemonCardProps = {
-  id: number; // número do Pokémon na Pokédex
-  name: string; // nome do Pokémon
-  image: string; // sprite normal
-  shinyImage?: string; // sprite shiny (opcional)
-  types: string[]; // lista de tipos
-  isShiny: boolean; // flag indicando se deve mostrar a versão shiny
-  onToggleShiny: () => void; // callback quando clica na sprite
-
-  /* props opcionais */
-  showTypes?: boolean; // se true, mostra os tipos (default: true)
-  showId?: boolean;    // se true, mostra o ID junto do nome (default: true)
-};
+  id: number
+  name: string
+  image: string
+  shinyImage?: string
+  types: string[]
+  isShiny: boolean
+  onToggleShiny: () => void
+  showTypes?: boolean
+  showId?: boolean
+}
 
 export default function PokemonCard({
   id,
@@ -29,16 +23,14 @@ export default function PokemonCard({
   types,
   isShiny,
   onToggleShiny,
-  showTypes = true, // valor padrão
-  showId = true, // valor padrão
+  showTypes = true,
+  showId = true,
 }: PokemonCardProps) {
-  // garante que sempre haja uma sprite disponível
-  const sprite = isShiny ? shinyImage || image : image;
+  const sprite = isShiny ? shinyImage || image : image
 
   return (
-    // card padronizado com altura fixa
-    <div className="bg-white rounded-xl shadow p-4 flex flex-col items-center justify-between hover:shadow-lg transition h-48">
-      {/* sprite com tamanho fixo e proporcional */}
+    <div className="bg-white rounded-xl shadow p-4 flex flex-col items-center hover:shadow-lg transition min-h-[12rem]">
+      {/* sprite */}
       <img
         src={sprite}
         alt={name}
@@ -46,19 +38,19 @@ export default function PokemonCard({
         onClick={onToggleShiny}
       />
 
-      {/* nome do Pokémon (com ID opcional) */}
-      <p className="text-sm sm:text-base capitalize font-bold text-center text-gray-800 mt-2 w-full">
+      {/* nome */}
+      <p className="text-sm sm:text-base capitalize font-bold text-center text-gray-800 mt-2">
         {showId ? `#${id} - ${name}` : name}
       </p>
 
-      {/* tipos (se showTypes = true) */}
+      {/* tipos */}
       {showTypes && (
-        <div className="w-full flex justify-center gap-1 mt-1 flex-wrap">
+        <div className="flex items-center justify-center gap-2 mt-2 flex-wrap">
           {types.map((type) => (
-            <TypeBadge key={type} type={type} /> // renderiza badge para cada tipo
+            <TypeBadge key={type} type={type} />
           ))}
         </div>
       )}
     </div>
-  );
+  )
 }
