@@ -82,8 +82,8 @@ npm start
 - Nome, ID, peso e experiência base.  
 - Badges de tipos estilizadas por cor.  
 - Botões:
-  -  **Favoritar / remover dos favoritos**.  
-  - ✨ Alternar entre sprite normal e shiny.  
+  - **Favoritar / remover dos favoritos**.  
+  - Alternar entre sprite normal e shiny ✨.  
 
 ### Favoritos
 - Lista todos os Pokémon favoritados.  
@@ -118,7 +118,7 @@ Atualizações no branch `main` do GitHub geram automaticamente um novo deploy.
 
 ---
 
-## Licença e Fair Use
+## Licença & Fair Use
 
 Este projeto foi desenvolvido **exclusivamente para fins acadêmicos** no âmbito da **Fábrica de Software**.  
 O consumo da [PokeAPI](https://pokeapi.co/) e o uso das imagens oficiais de Pokémon seguem os princípios de **fair use** para estudo, pesquisa e prática de desenvolvimento.  
